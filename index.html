@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 	<script>
 		AWS.config.update({
@@ -12,12 +13,14 @@
 		var docClient = new AWS.DynamoDB.DocumentClient();
 
 		function uploadData(){
-			var email = document.getElementById("email").value
+			var urlParams = new URLSearchParams(window.location.search);
+			var userID = urlParams.get('client_id');
+			console.log(userID);
 			var paypal = document.getElementById("paypal").value
 			var params = {
 				TableName :"People",
 				Item:{
-					"email": email,
+					"user_id": userID,
 					"paypal": paypal
 				}
 			};
@@ -32,8 +35,7 @@
 	</script>
 </head>
 <body>
-	Welcome to Split Pay!<br>
-	Amazon account email: <input type="text" id="email"><br>
+	Welcome to Split Pay!<br>]
 	Papal link: https://www.paypal.me/<input type="text" id="paypal"><br>
 	<button id="button" onclick="uploadData()"> Submit </button>
 	<textarea id="textarea"></textarea>
