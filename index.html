@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+	<script>
+		AWS.config.update({
+			region: "us-east-1",
+			accessKeyId: "AKIAIFA7I5R3KHLC62PA",
+			secretAccessKey: "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"
+		});
+		var dynamodb = new AWS.DynamoDB();
+		var docClient = new AWS.DynamoDB.DocumentClient();
+
+		function uploadData(){
+			var email = document.getElementById("email").value
+			var paypal = document.getElementById("paypal").value
+			var params = {
+				TableName :"People",
+				Item:{
+					"email": email,
+					"paypal": paypal
+				}
+			};
+			docClient.put(params, function(err, data) {
+				if (err) {
+					document.getElementById('textarea').innerHTML = "Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2);
+				} else {
+					document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+				}
+			});
+		}
+	</script>
+</head>
+<body>
+	Welcome to Split Pay!<br>
+	Amazon account email: <input type="text" id="email"><br>
+	Papal link: https://www.paypal.me/<input type="text" id="paypal"><br>
+	<button id="button" onclick="uploadData()"> Submit </button>
+	<textarea id="textarea"></textarea>
+</body>
+</html>
