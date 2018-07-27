@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
@@ -13,7 +13,6 @@
 			secretAccessKey: "dPU1TOVtTEwYTEi0oVBv34cL6gQT3xKL0rzB72l/"
 		});
 		var dynamodb = new AWS.DynamoDB();
-		var docClient = new AWS.DynamoDB.DocumentClient();
 
 		function uploadData(){
 			var urlParams = new URLSearchParams(window.location.search);
@@ -21,20 +20,25 @@
 			console.log(userID);
 			var paypal = document.getElementById("paypal").value
 			var params = {
-				TableName :"People",
-				Item:{
-					"user_id": userID,
-					"paypal": paypal
-				}
+				Item: {
+					"user_id": {
+						S: userID
+					}, 
+					"paypal": {
+						S: paypal
+					}
+				}, 
+				ReturnConsumedCapacity: "TOTAL", 
+				TableName: "People"
 			};
-			docClient.put(params, function(err, data) {
+			dynamodb.putItem(params, function(err, data) {
 				if (err) {
-					console.log("Unable to add item: " + "\n" + JSON.stringify(err, undefined, 2));
+					console.log(err, err.stack);
 				} else {
-					document.getElementById('textarea').innerHTML = "PutItem succeeded: " + "\n" + JSON.stringify(data, undefined, 2);
+					console.log(data); 
 					window.location.href = urlParams.get('redirect_uri');
-				}
-			});
+   				}          // successful response
+   			});
 		}
 	</script>
 </head>
@@ -47,7 +51,7 @@
 		<div class = row>
 			<div>Enter Your Paypal Link: https://www.paypal.me/<input type="text" id="paypal"></div>
 		</div>
-			<button id="button" onclick="uploadData()" class=btn> Submit </button>
+		<button id="button" onclick="uploadData()" class=btn> Submit </button>
 
 		<div class = row>
 			<div class = small>
