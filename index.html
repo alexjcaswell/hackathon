@@ -7,40 +7,38 @@
 
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 	<script>
-		AWS.config.update({
-			region: "us-east-1",
-			accessKeyId: "AKIAIFA7I5R3KHLC62PA",
-			secretAccessKey: "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"
-		});
-		var dynamodb = new AWS.DynamoDB();
-
 		function uploadData(){
 			var urlParams = new URLSearchParams(window.location.search);
 			var userID = urlParams.get('client_id');
 			console.log(userID);
 			var paypal = document.getElementById("paypal").value
-			var params = {
-				Item: {
-					"user_id": {
-						S: userID
-					}, 
-					"paypal": {
-						S: paypal
-					}
-				}, 
-				ReturnConsumedCapacity: "TOTAL", 
-				TableName: "People"
-			};
-			dynamodb.putItem(params, function(err, data) {
-				if (err) {
-					console.log(err, err.stack);
-				} else {
-					console.log(data); 
-					window.location.href = urlParams.get('redirect_uri');
-   				}          // successful response
-   			});
+
+			const Http = new XMLHttpRequest();
+			const url='https://8z4g2dkfz9.execute-api.us-east-1.amazonaws.com/Prod?adduser=add';
+			const json = '{ "user":"'+userID+'", "paypal":"'+paypal+'"}';
+
+			// Http.open("GET", url);
+			// Http.send();
+			// Http.onreadystatechange=(e)=>{
+			// 	console.log(Http.responseText)
+			// }
+			// var xmlhttp = new XMLHttpRequest();
+		 //    xmlhttp.onreadystatechange = callbackFunction(xmlhttp);
+		 //    xmlhttp.open("POST", URL, false);
+		 //    xmlhttp.setRequestHeader("Content-Type", "application/json");
+		 //    xmlhttp.onreadystatechange = callbackFunction(xmlhttp);
+		 //    xmlhttp.send(json);
+		 //    alert(xmlhttp.responseText);
+		 var request = new XMLHttpRequest();
+		// Open a new connection, using the GET request on the URL endpoint
+		request.open('POST', url, true);
+		request.setRequestHeader("Content-Type", "application/json");
+		request.onreadystatechange = function() {
+			console.log(this);
 		}
-	</script>
+		request.send(json);
+	}
+</script>
 </head>
 <body>
 	<div class=container>
